@@ -3,10 +3,8 @@
 
 
 /* *** MODULE *** */
-#include <string>
+#include <string.h>
 #include <stdint.h>
-
-using namespace std;
 
 /* *** DATA STRUCTURE *** */
 typedef struct {
@@ -44,7 +42,7 @@ typedef struct {
 
 
 /* *** PROTOTYPE *** */
-unsigned char* readData(string fileName);
+unsigned char* ReadData(char* fileName);
 
 Segment CreateSegment(int inputSequenceNumber, unsigned char inputData, unsigned char inputChecksum);
 

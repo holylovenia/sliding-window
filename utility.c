@@ -1,26 +1,23 @@
-#include <fstream>
-#include <iostream>
+#include <stdio.h>
 #include "utility.h"
-#include <cstring>
+#include <stdlib.h>
 
-unsigned char* readData(string fileName) {
-  ifstream file(fileName.c_str());
-  size_t size = 0;
-
-  file.seekg(0, ios::end);
-  size = file.tellg();
-  file.seekg(0, ios::beg);
-
-  char* temp = new char[size];
-  
-  if(file) {
-    file.read(temp, size);
-    unsigned char* data = new unsigned char[size];
-    strcpy((char*) data, temp);
-    return data;
-  } else {
+unsigned char* ReadData(char* fileName) {
+  FILE* file;
+  file = fopen(fileName, "r");
+  if(file == NULL) {
     return NULL;
   }
+  int size = 0;
+  unsigned char* data = (unsigned char*) malloc (sizeof(unsigned char));
+  int c;
+  while ((c = fgetc(file)) != EOF) {
+    data[size] = (unsigned char) c;
+    size++;
+  }
+  fclose(file);
+
+  return data;
 }
 
 Segment CreateSegment(int inputSequenceNumber, unsigned char inputData, unsigned char inputChecksum) {
@@ -43,4 +40,18 @@ PacketACK CreatePacketACK(int inputNextSequenceNumber, unsigned char inputAdvert
   Checksum(P) = inputChecksum;
 
   return P;
+}
+
+int main() {
+  unsigned char* data = ReadData("hehe.txt");
+  if(data != NULL) {
+    printf("Size of data: %d\n", sizeof(data));
+    for(int i = 0; i < sizeof(data); i++) {
+      printf("%d. %c\n", i, data[i]);
+    }
+  } else {
+    printf("return null");
+  }
+
+  return 0;
 }
