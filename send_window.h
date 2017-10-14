@@ -1,8 +1,6 @@
 #ifndef SEND_WINDOW_H
 #define SEND_WINDOW_H
 
-#include <bits/stdc++.h>
-
 typedef struct {
   int sendingWindowSize;
   int lastAckReceived;
