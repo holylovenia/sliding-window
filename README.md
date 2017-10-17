@@ -54,10 +54,6 @@ Berikut adalah format dari packet ACK:
 
 Untuk mensimulasikan perubahan ukuran window, anda dapat menggunakan fungsi `sleep()` dengan nilai random ketika melakukan penerima memindahkan data buffer ke aplikasi sehingga pembacaan data tidak dalam kecepatan yang konstan.
 
-Agar mempermudah penilaian yang dilakukan asisten, gunakan format eksekusi program sebagai berikut:
-`./sendfile <filename> <windowsize> <buffersize> <destination_ip> <destination_port>`
-`./recvfile <filename> <windowsize> <buffersize> <port>`
-
 
 ## Spesifikasi Bonus
 
@@ -66,3 +62,174 @@ Progam yang anda buat dapat menghasilkan sebuah log file yang menggambarkan oper
 Sebagai contoh, berikut adalah log file yang dihasilkan oleh apache:
 https://ossec-docs.readthedocs.io/en/latest/log_samples/apache/apache.html
 
+
+## Petunjuk Penggunaan Program
+
+1. Lakukan kompilasi program dengan perintah `make`
+
+2. Format eksekusi program sebagai berikut:
+
+`./sendfile <filename> <windowsize> <buffersize> <destination_ip> <destination_port>`
+
+`./recvfile <filename> <windowsize> <buffersize> <port>`
+
+
+## Cara Kerja Sliding Window
+
+Pada Sliding Window buatan kami, ada dua komponen utama, yaitu sender dan receiver.
+
+Sender bertugas untuk membaca file yang mau dikirim, kemudian mengirimkan datanya kepada receiver. Apabila terjadi kehilangan data, program akan mengirim ulang data dari sequence number yang hilang hingga sebelum Last Acknowledge Received (LAR).
+
+
+Contoh dengan receiver window size = 4:
+
+- Awal
+Sender Window
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+
+Receiver Window
+|   |   |   |   |
+
+Last Acknowledge Received (LAR) = 0
+Last Frame Sent (LFS) = 0
+Last Frame Received (LFR) = 0
+Largest Acceptable Frame (LAF) = 4
+
+- Pengiriman frame 1 (berhasil)
+Sender Window
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+
+Receiver Window
+| 1 |   |   |   |
+
+LAR = 2
+LFS = 1
+LFR = 1
+LAF = 4
+
+- Pengiriman frame 2 (hilang)
+Sender Window
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+
+Receiver Window
+| 1 |   |   |   |
+
+LAR = 2
+LFS = 2
+LFR = 1
+LAF = 4
+
+- Pengiriman frame 3 (berhasil)
+Sender Window
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+
+Receiver Window
+| 1 |   | 3 |   |
+
+LAR = 2
+LFS = 3
+LFR = 3
+LAF = 4
+
+- Pengiriman frame 4 (berhasil)
+Sender Window
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+
+Receiver Window
+| 1 |   | 3 | 4 |   |   |   |   |
+
+LAR = 2
+LFS = 4
+LFR = 4
+LAF = 8
+
+- Pengiriman frame 5 (berhasil)
+Sender Window
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+
+Receiver Window
+| 1 |   | 3 | 4 | 5 |   |   |   |
+
+LAR = 2
+LFS = 5
+LFR = 5
+LAF = 8
+
+- Pengiriman ulang frame 2 (berhasil)
+Sender Window
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+
+Receiver Window
+| 1 | 2 | 3 | 4 | 5 |   |   |   |
+
+LAR = 3
+LFS = 2
+LFR = 2
+LAF = 8
+
+- Pengiriman ulang frame 3 (berhasil)
+Sender Window
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+
+Receiver Window
+| 1 | 2 | 3 | 4 | 5 |   |   |   |
+
+LAR = 4
+LFS = 3
+LFR = 3
+LAF = 8
+
+- Pengiriman ulang frame 4 (berhasil)
+Sender Window
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+
+Receiver Window
+| 1 | 2 | 3 | 4 | 5 |   |   |   |
+
+LAR = 5
+LFS = 4
+LFR = 4
+LAF = 8
+
+- Pengiriman ulang frame 6 (berhasil)
+Sender Window
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+
+Receiver Window
+| 1 | 2 | 3 | 4 | 5 |   |   |   |
+
+LAR = 7
+LFS = 6
+LFR = 6
+LAF = 8
+
+
+## Pembagian Tugas
+1. Rionaldi Chandraseta / 13515077: receiver, debugging
+2. Holy Lovenia / 13515113: utility, receiver
+3. Agus Gunawan / 13515143: transmitter
+
+
+## Jawaban
+1. Apa yang terjadi jika advertised window yang dikirim bernilai 0? Apa cara untuk menangani hal tersebut?
+Maka, data yang di receiver window ditulis ke file eksternal, dan ukuran advertised window size dijadikan sebesar window size atau buffer size (salah satu yang bernilai lebih kecil di antara keduanya).
+
+2. Sebutkan field data yang terdapat TCP Header serta ukurannya, ilustrasikan, dan jelaskan kegunaan dari masing-masing field data tersebut!
+|       Field Data      |  Size  | Kegunaan |
+|:---------------------:|:------:|:--------:|
+| Start of Header (SOH) | 1 byte | Penanda mulainya dari sebuah pembungkusan data |
+| Sequence Number       | 4 byte | Penanda nomor dari sebuah frame |
+| Start of Text (STX)   | 1 byte | Penanda mulainya suatu data |
+| Data                  | 1 byte | Bagian yang ingin ditransfer dari sender ke receiver |
+| End of Text (ETX)     | 1 byte | Penanda berakhirnya suatu data |
+| Checksum              | 1 byte | Mengecek apakah data rusak atau tidak |
+
+Format field data:
+| SOH (0x1) | Sequence Number | STX (0x2) | Data | ETX (0x3) | checksum |
+|:-----:|:--------:|:------:|:------:|:------:|:--------:|
+| 1 byte|  4 byte  | 1 byte | 1 byte | 1 byte |  1 byte  |
+
+Contoh field data:
+| SOH | Sequence Number | STX | Data | ETX | checksum |
+|:-----:|:--------:|:------:|:------:|:------:|:--------:|
+| 0x1 | 0x5 | 0x2 | 0x82 | 0x3 | 0x7e |
