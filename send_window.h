@@ -2,9 +2,9 @@
 #define SEND_WINDOW_H
 
 typedef struct {
-  int sendingWindowSize;
-  int lastAckReceived;
-  int lastFrameSent;
+  unsigned int sendingWindowSize;
+  unsigned int lastAckReceived;
+  unsigned int lastFrameSent;
 } SendingWindow;
 
 #define NONE 0
@@ -13,20 +13,20 @@ typedef struct {
 #define LAR(S) (S).lastAckReceived
 #define LFS(S) (S).lastFrameSent
 
-void createNew(SendingWindow s, int windowSize) {
-  SWS(s) = windowSize;
-  LAR(s) = NONE;
-  LFS(s) = NONE;
+void createNew(SendingWindow *s, unsigned int windowSize) {
+  s->sendingWindowSize = windowSize;
+  s->lastAckReceived = NONE;
+  s->lastFrameSent = NONE;
 }
 
-void createNew(SendingWindow s, int windowSize, int lastAckReceived, int lastFrameSent) {
-  SWS(s) = windowSize;
-  LAR(s) = lastAckReceived;
-  LFS(s) = lastFrameSent;
+void createNewSendingWindow(SendingWindow *s, unsigned int windowSize, unsigned int lastAckReceived, unsigned int lastFrameSent) {
+  SWS(*s) = windowSize;
+  LAR(*s) = lastAckReceived;
+  LFS(*s) = lastFrameSent;
 }
 
-void receiveAcks(SendingWindow s, int ack) {
-  LAR(s) = (LAR(s) < ack) ? ack : LAR(s);
+void receiveAcks(SendingWindow *s, int ack) {
+  LAR(*s) = (LAR(*s) < ack) ? ack : LAR(*s);
 }
 
 void sendFrames(SendingWindow s, int frameCount) {

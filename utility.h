@@ -3,13 +3,15 @@
 
 
 /* *** MODULE *** */
-#include <string.h>
+#include <string>
 #include <stdint.h>
+
+using namespace std;
 
 /* *** DATA STRUCTURE *** */
 typedef struct {
   unsigned char SOH;
-  int SequenceNumber;
+  unsigned int SequenceNumber;
   unsigned char STX;
   unsigned char Data;
   unsigned char ETX;
@@ -18,8 +20,8 @@ typedef struct {
 
 typedef struct {
   unsigned char ACK;
-  int NextSequenceNumber;
-  unsigned char AdvertisedWindowSize;
+  unsigned int NextSequenceNumber;
+  unsigned int AdvertisedWindowSize;
   unsigned char Checksum;
 } PacketACK;
 
@@ -42,10 +44,13 @@ typedef struct {
 
 
 /* *** PROTOTYPE *** */
-unsigned char* ReadData(char* fileName);
+const string currentDateTime();
 
-Segment CreateSegment(int inputSequenceNumber, unsigned char inputData, unsigned char inputChecksum);
+Segment CreateSegment(unsigned int inputSequenceNumber, unsigned char inputData, unsigned char inputChecksum);
 
-PacketACK CreatePacketACK(int inputNextSequenceNumber, unsigned char inputAdvertisedWindowSize, unsigned char inputChecksum);
+PacketACK CreatePacketACK(unsigned int inputNextSequenceNumber, unsigned int inputAdvertisedWindowSize, unsigned char inputChecksum);
 
+unsigned char generateChecksumPaket(Segment paket);
+
+unsigned char generateChecksumACK(PacketACK paket);
 #endif
