@@ -81,9 +81,13 @@ Pada Sliding Window buatan kami, ada dua komponen utama, yaitu sender dan receiv
 Sender bertugas untuk membaca file yang mau dikirim, kemudian mengirimkan datanya kepada receiver. Apabila terjadi kehilangan data, program akan mengirim ulang data dari sequence number yang hilang hingga sebelum Last Acknowledge Received (LAR).
 
 
-Contoh dengan receiver window size = 4:
+### Contoh
 
-- Awal
+Receiver window size = 4
+
+---
+
+0. **Awal**
 
 Sender Window
 
@@ -103,8 +107,9 @@ Last Frame Received (LFR) = 0
 
 Largest Acceptable Frame (LAF) = 4
 
+---
 
-- Pengiriman frame 1 (berhasil)
+1. **Pengiriman frame 1 (berhasil)**
 
 Sender Window
 
@@ -121,7 +126,9 @@ LFS = 1
 LFR = 1
 LAF = 4
 
-- Pengiriman frame 2 (hilang)
+---
+
+2. **Pengiriman frame 2 (hilang)**
 
 Sender Window
 
@@ -141,8 +148,9 @@ LFR = 1
 
 LAF = 4
 
+---
 
-- Pengiriman frame 3 (berhasil)
+3. **Pengiriman frame 3 (berhasil)**
 
 Sender Window
 
@@ -162,8 +170,9 @@ LFR = 3
 
 LAF = 4
 
+---
 
-- Pengiriman frame 4 (berhasil)
+4. **Pengiriman frame 4 (berhasil)**
 
 Sender Window
 
@@ -183,8 +192,9 @@ LFR = 4
 
 LAF = 8
 
+---
 
-- Pengiriman frame 5 (berhasil)
+5. **Pengiriman frame 5 (berhasil)**
 
 Sender Window
 
@@ -204,8 +214,9 @@ LFR = 5
 
 LAF = 8
 
+---
 
-- Pengiriman ulang frame 2 (berhasil)
+6. **Pengiriman ulang frame 2 (berhasil)**
 
 Sender Window
 
@@ -225,8 +236,9 @@ LFR = 2
 
 LAF = 8
 
+---
 
-- Pengiriman ulang frame 3 (berhasil)
+7. **Pengiriman ulang frame 3 (berhasil)**
 
 Sender Window
 
@@ -246,8 +258,9 @@ LFR = 3
 
 LAF = 8
 
+---
 
-- Pengiriman ulang frame 4 (berhasil)
+8. **Pengiriman ulang frame 4 (berhasil)**
 
 Sender Window
 
@@ -267,8 +280,9 @@ LFR = 4
 
 LAF = 8
 
+---
 
-- Pengiriman ulang frame 6 (berhasil)
+9. **Pengiriman ulang frame 6 (berhasil)**
 
 Sender Window
 
@@ -287,6 +301,8 @@ LFS = 6
 LFR = 6
 
 LAF = 8
+
+---
 
 
 ## Pembagian Tugas
