@@ -314,7 +314,7 @@ LAF = 8
 ## Jawaban
 1. Apa yang terjadi jika advertised window yang dikirim bernilai 0? Apa cara untuk menangani hal tersebut?
 
-`>` Maka, data yang di receiver window ditulis ke file eksternal, dan ukuran advertised window size dijadikan sebesar window size atau buffer size (salah satu yang bernilai lebih kecil di antara keduanya).
+> Maka, data yang di receiver window ditulis ke file eksternal, dan ukuran advertised window size dijadikan sebesar window size atau buffer size (salah satu yang bernilai lebih kecil di antara keduanya).
 
 2. Sebutkan field data yang terdapat TCP Header serta ukurannya, ilustrasikan, dan jelaskan kegunaan dari masing-masing field data tersebut!
 
