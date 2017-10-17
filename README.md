@@ -86,10 +86,12 @@ Contoh dengan receiver window size = 4:
 - Awal
 
 Sender Window
+
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
+
 |   |   |   |   |
 |:-:|:-:|:-:|:-:|
 
@@ -105,10 +107,12 @@ Largest Acceptable Frame (LAF) = 4
 - Pengiriman frame 1 (berhasil)
 
 Sender Window
+
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
+
 | 1 |   |   |   |
 |:-:|:-:|:-:|:-:|
 
@@ -120,10 +124,12 @@ LAF = 4
 - Pengiriman frame 2 (hilang)
 
 Sender Window
+
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
+
 | 1 |   |   |   |
 |:-:|:-:|:-:|:-:|
 
@@ -139,10 +145,12 @@ LAF = 4
 - Pengiriman frame 3 (berhasil)
 
 Sender Window
+
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
+
 | 1 |   | 3 |   |
 |:-:|:-:|:-:|:-:|
 
@@ -158,10 +166,12 @@ LAF = 4
 - Pengiriman frame 4 (berhasil)
 
 Sender Window
+
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
+
 | 1 |   | 3 | 4 |   |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
@@ -177,10 +187,12 @@ LAF = 8
 - Pengiriman frame 5 (berhasil)
 
 Sender Window
+
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
+
 | 1 |   | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
@@ -196,10 +208,12 @@ LAF = 8
 - Pengiriman ulang frame 2 (berhasil)
 
 Sender Window
+
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
+
 | 1 | 2 | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
@@ -215,10 +229,12 @@ LAF = 8
 - Pengiriman ulang frame 3 (berhasil)
 
 Sender Window
+
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
+
 | 1 | 2 | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
@@ -234,10 +250,12 @@ LAF = 8
 - Pengiriman ulang frame 4 (berhasil)
 
 Sender Window
+
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
+
 | 1 | 2 | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
@@ -253,10 +271,12 @@ LAF = 8
 - Pengiriman ulang frame 6 (berhasil)
 
 Sender Window
+
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
+
 | 1 | 2 | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
