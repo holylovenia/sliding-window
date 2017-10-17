@@ -3,8 +3,10 @@
 
 
 /* *** MODULE *** */
-#include <string.h>
+#include <string>
 #include <stdint.h>
+
+using namespace std;
 
 /* *** DATA STRUCTURE *** */
 typedef struct {
@@ -42,7 +44,7 @@ typedef struct {
 
 
 /* *** PROTOTYPE *** */
-unsigned char* ReadData(char* fileName);
+const string currentDateTime();
 
 Segment CreateSegment(unsigned int inputSequenceNumber, unsigned char inputData, unsigned char inputChecksum);
 

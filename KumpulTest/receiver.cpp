@@ -25,12 +25,13 @@ void flush(bool *alreadyReceived) {
 }
 
 int main(int argc, char* argv[]) {
+	fstream Logfile;
+	Logfile.open("Logfile.txt", ios::out);
 	char* fileName = argv[1];
 	unsigned int windowSize = atoi(argv[2]);
 	bufferSize = atoi(argv[3]);
 	int port = atoi(argv[4]);
-
-	printf("%s\n%d\n%d\n%d\n", fileName, windowSize, bufferSize, port);
+	Logfile << currentDateTime() << "Receiver: fileName " << fileName << " windowSize " << windowSize << " bufferSize " << bufferSize << " port " << port << endl;
 	unsigned char buffer[bufferSize];
 	bool alreadyReceived[bufferSize];
 
@@ -80,54 +81,47 @@ int main(int argc, char* argv[]) {
 	//Urusan Random Number
 	srand(time(NULL));
 	while (1) {
-		printf("Waiting for data...\n");
+		Logfile << currentDateTime() << "Receiver: Waiting for data..." << endl;
 		fflush(stdout);
 
 		char * recvBuf = (char *) &paket;
 		if (recvfrom(udpSocket, recvBuf, sizeof(paket), 0, (struct sockaddr *) &serverAddr, &slen) >= 0) {
-			printf("%c %c\n", generateChecksumPaket(paket), Checksum(paket));
+			Logfile << currentDateTime() << "Receiver: generateChecksumPaket(paket) " << generateChecksumPaket(paket) << " Checksum " << Checksum(paket) << endl;
 			if (generateChecksumPaket(paket) == Checksum(paket)) {
 				if (SOH(paket) == 0x02) {
 					finish = 1;
 				}
-				printf("Received packet from %s:%d\n", inet_ntoa(serverAddr.sin_addr), ntohs(serverAddr.sin_port));
-				printf("Frame Number: %d Data: %c\n", SequenceNumber(paket), Data(paket));
-		
-				printf("SeqNum %d LFR %d LAF %d\n", SequenceNumber(paket), LFR, LAF);
+				Logfile << currentDateTime() << "Receiver: Received packet from " << inet_ntoa(serverAddr.sin_addr) << " " << ntohs(serverAddr.sin_port) << endl;
+				Logfile << currentDateTime() << "Receiver: Frame Number " << SequenceNumber(paket) << " Data " << Data(paket) << endl;
+				Logfile << currentDateTime() << "Receiver: SeqNum " << SequenceNumber(paket) << " LFR " << LFR << " LAF " << LAF << endl;
 				if (SequenceNumber(paket) >= LFR && SequenceNumber(paket) <= LAF) {
-					if (SequenceNumber(paket) == LFR) LFR++;
-
-					printf("SeqNum %d LFR %d LAF %d counterBufferOffset %d\n", SequenceNumber(paket), LFR, LAF, counterBufferOffset);
+					if (SequenceNumber(paket) == LFR) {
+						LFR++;
+						Logfile << currentDateTime() << "Receiver: SeqNum " << SequenceNumber(paket) << " LFR " << LFR << " LAF " << LAF << " counterBufferOffset " << counterBufferOffset << endl;
 					
-					//Writing Data to Buffer
-					if (SequenceNumber(paket) - counterBufferOffset >= 0) {
-						if (!alreadyReceived[SequenceNumber(paket) - counterBufferOffset]) {
-							alreadyReceived[SequenceNumber(paket) - counterBufferOffset] = true;
-							buffer[SequenceNumber(paket) - counterBufferOffset] = Data(paket);
-							counterBuffer++;
-							advertisedWindowSize--;
-							if (advertisedWindowSize == 0) {
-								advertisedWindowSize = (bufferSize > windowSize) ? windowSize : bufferSize;
-							}
-						}	
+						//Writing Data to Buffer
+						buffer[SequenceNumber(paket) - counterBufferOffset] = Data(paket);
+						counterBuffer++;
+						advertisedWindowSize--;
+						if (advertisedWindowSize == 0) {
+							advertisedWindowSize = (bufferSize > windowSize) ? windowSize : bufferSize;
+						}
 					}
-
 				}
 
-				printf("windowSize=%d\n", windowSize);
-				printf("advertisedWindowSize=%d\n", advertisedWindowSize);
+				Logfile << currentDateTime() << "Receiver: windowSize " << windowSize << endl;
+				Logfile << currentDateTime() << "Receiver: advertisedWindowSize " << advertisedWindowSize << endl;
+				Logfile << currentDateTime() << "Receiver: LAF " << LAF << " LFR " << LFR << endl;
 				LAF = LFR + min(windowSize, advertisedWindowSize);
-				printf("LAF=%d\n", LAF);
-				printf("LFR=%d\n", LFR);
 			} else {
-				printf("Wrong Checksum\n");
+				Logfile << currentDateTime() << "Receiver: Wrong Checksum" << endl;
 			} 
 		} else {
-			printf("Fail to receive\n");
+			Logfile << currentDateTime() << "Receiver: Failed to receive" << endl;
 		}
 
 		//Sending ACK 
-		printf("Send ACK %d\n", LFR);
+		Logfile << currentDateTime() << "Receiver: Sending ACK " << LFR << endl;
 		ack = CreatePacketACK(LFR, advertisedWindowSize, '0');
 		Checksum(ack) = generateChecksumACK(ack);
 
@@ -135,32 +129,32 @@ int main(int argc, char* argv[]) {
 		sendto(udpSocket, sendBuf, sizeof(ack), 0, (struct sockaddr*) &serverAddr, slen);
 
 		//Writing Data to File
-		printf("Counter Buffer %d bufferSize %d\n", counterBuffer, bufferSize);
+		Logfile << currentDateTime() << "Receiver: Processing to write data to file" << endl;
+		Logfile << currentDateTime() << "Receiver: counterBuffer " << counterBuffer << " bufferSize " << bufferSize << endl;
 		if (counterBuffer == bufferSize) {
-			printf("MASUK SINI GING\n");
 			counterBufferOffset += bufferSize;
 			counterBuffer = 0;
 			for (int i = 0; i < bufferSize; i++) {
 				fputc(buffer[i], file);	
 			}
 			flush(alreadyReceived);
-			printf("Writing File\n");
+			Logfile << currentDateTime() << "Receiver: Writing data to file" << endl;
 		}
-
-		// sleep(rand() % 3);
 
 		if (finish) {
 			break;
 		}
 	}
 	if (counterBuffer != 0) {
-		printf("Print Remaining Buffer to File");
+		Logfile << currentDateTime() << "Receiver: Writing remaining buffer to file" << endl;
+		printf("Writing remaining buffer to File\n");
 		for (int i = 0; i < counterBuffer; i++) {
 			fputc(buffer[i], file);
 		}
 	}
-
-	printf("All Data Received Succesfully\n");
+	Logfile << currentDateTime() << "Receiver: All data has been written successfully" << endl;
+	printf("All data has been received succesfully\n");
 	
-	fclose(file);	
+	fclose(file);
+	Logfile.close();
 }

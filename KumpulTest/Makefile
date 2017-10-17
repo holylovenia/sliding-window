@@ -2,6 +2,8 @@ CC=g++
 
 default: sendfile recvfile
 
+all: sendfile recvfile
+
 sender.o: sender.cpp utility.h send_window.h
 	$(CC) -c sender.cpp
 

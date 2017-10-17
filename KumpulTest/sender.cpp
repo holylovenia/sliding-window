@@ -7,6 +7,7 @@
 #include "send_window.h"
 #include <unistd.h>
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -16,6 +17,8 @@ void die(char* errorMessage) {
 }
 
 int main(int argc, char* argv[]) {
+	fstream Logfile;
+	Logfile.open("Logfile.txt", ios::out);
 	char* fileName = argv[1];
 	unsigned int windowSize = atoi(argv[2]);
 	unsigned int bufferSize = atoi(argv[3]);
@@ -75,7 +78,7 @@ int main(int argc, char* argv[]) {
 	srand(time(NULL));
 
 	while (1) {
-		// printf("Sending Data: \n");
+		Logfile << currentDateTime() << "Sender: Sending data" << endl;
 		
 		//Urusan Buffer	
 		while (counterBuffer < bufferSize && !alreadyReadAll) {
@@ -84,14 +87,14 @@ int main(int argc, char* argv[]) {
 				break;
 			}
 			buffer[counterBuffer] = c;
-			// printf("Read Data : %d %c \n", counterBuffer + bufferSizeOffset, buffer[counterBuffer]);
+			Logfile << currentDateTime() << "Sender: Read data " << counterBuffer + bufferSizeOffset << " " << buffer[counterBuffer] << endl;
 			counterBuffer++;
 		}
 
 		//Sending Frame
-
-		// printf("BUFF %d OFFSET %d\n", bufferSize, bufferSizeOffset);
-		// printf("LAR %d LFS %d\n", LAR(sendingWindow), LFS(sendingWindow));
+		Logfile << currentDateTime() << "Sender: Processing to send frame" << endl;
+		Logfile << currentDateTime() << "Sender: bufferSize " << bufferSize << " bufferSizeOffset " << bufferSizeOffset << endl;
+		Logfile << currentDateTime() << "Sender: LAR " << LAR(sendingWindow) << " LFS " << LFS(sendingWindow) << endl;
 		repeatStart = LAR(sendingWindow);
 		repeatEnd = LFS(sendingWindow);
 		
@@ -99,29 +102,27 @@ int main(int argc, char* argv[]) {
 		while (LFS(sendingWindow) < LAR(sendingWindow) + windowSize && LFS(sendingWindow) < counterBuffer + bufferSizeOffset && paramSend < advertisedWindowSize) {
 
 			//Create Segment
+			Logfile << currentDateTime() << "Sender: Creating segment" << endl;
 			paket = CreateSegment(LFS(sendingWindow), buffer[LFS(sendingWindow) - bufferSizeOffset], 0);
 			Checksum(paket) = generateChecksumPaket(paket);
-			
 			LFS(sendingWindow) = LFS(sendingWindow) + 1;
+			Logfile << currentDateTime() << "Sender: Frame Number " << LFS(sendingWindow)-1 << " Data " << Data(paket) << endl;
 
-			// printf("Frame Number %d : DATA %c\n", LFS(sendingWindow) - 1, Data(paket));
-
-			//Send Segment TODO: SLIDING WINDOW
 			char* segment = (char *) &paket;
 			if (sendto(udpSocket, segment, sizeof(paket), 0, (struct sockaddr *) &clientAddress, slen) == -1) {
 				die("sendto");
 			}
 			paramSend++;
 		}
-		// printf("YAHA\n");
 			
 		//Sending Lost Frame
+		Logfile << currentDateTime() << "Sender: Sending lost frame(s)" << endl;
 		int i;
 		for (i = repeatStart; i < repeatEnd; i++) {
 			paket = CreateSegment(i, buffer[i - bufferSizeOffset], 0);
 			Checksum(paket) = generateChecksumPaket(paket);
 			
-			// printf("Repeat Send Frame Number %d : DATA %c\n", i, Data(paket));
+			Logfile << currentDateTime() << "Sender: Repeat send Frame Number " << i << " Data " << Data(paket) << endl;
 
 			char* segment = (char *) &paket;
 			if (sendto(udpSocket, segment, sizeof(paket), 0, (struct sockaddr *) &clientAddress, slen) == -1) {
@@ -131,6 +132,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		//Receive ACK
+		Logfile << currentDateTime() << "Sender: Receiving ACK" << endl;
 		for (i = 0; i < paramSend; i++) {
 			char* acksegment = (char *) &ack;
 			if (recvfrom(udpSocket, acksegment, sizeof(ack), 0, (struct sockaddr*) &clientAddress, &slen) >= 0) {
@@ -138,12 +140,12 @@ int main(int argc, char* argv[]) {
 					advertisedWindowSize = AdvertisedWindowSize(ack);
 					LAR(sendingWindow) = NextSequenceNumber(ack);
 				} else {
-					// printf("Wrong ACK Checksum\n");
+					Logfile << currentDateTime() << "Sender: Wrong ACK checksum" << endl;
 				}
 			} else {
-				// printf("Timeout\n");
+				Logfile << currentDateTime() << "Sender: Timeout" << endl;
 			}
-			// printf("Received ACK %d\n", NextSequenceNumber(ack));
+			Logfile << currentDateTime() << "Sender: Received ACK " << NextSequenceNumber(ack) << endl;
 		}
 		
 
@@ -152,14 +154,12 @@ int main(int argc, char* argv[]) {
 		}
 
 		//Buffer Size Offset Increase
-		// printf("YEEE %d %d\n", LAR(sendingWindow),  bufferSize + bufferSizeOffset);
+		Logfile << currentDateTime() << "Sender: bufferSizeOffset increases " << LAR(sendingWindow) << " " << bufferSize + bufferSizeOffset << endl;
 		if (LAR(sendingWindow) == bufferSize + bufferSizeOffset) {
 			counterBuffer = 0;
 			bufferSizeOffset += bufferSize;
-			// printf("SIKAT %d\n", bufferSizeOffset);
-		} 
-
-		// sleep(rand() % 2);
+			Logfile << currentDateTime() << "Sender: Current bufferSizeOffset " << bufferSizeOffset << endl;
+		}
 	}
 
 	//Sending Ending Sequence
@@ -169,11 +169,11 @@ int main(int argc, char* argv[]) {
 	finalSegment = CreateSegment(0, 0, 0);
 	SOH(finalSegment) = 0x2;
 	Checksum(finalSegment) = generateChecksumPaket(finalSegment);
-	// printf("%c %c\n", generateChecksumPaket(finalSegment), Checksum(finalSegment));
+	Logfile << currentDateTime() << "Sender: Sending ending sequence " << generateChecksumPaket(finalSegment) << " " << Checksum(finalSegment) << endl;
 	cout <<(generateChecksumPaket(finalSegment) == Checksum(finalSegment)) << endl;
 	cout << NextSequenceNumber(finalACK) << endl;
 	while (NextSequenceNumber(finalACK) == 0 || generateChecksumACK(finalACK) != Checksum(finalACK)) {
-		// printf("Sending Final\n");
+		Logfile << currentDateTime() << "Sender: Sending final packet" << endl;
 		char* segment = (char *) &finalSegment;
 		sendto(udpSocket, segment, sizeof(finalSegment), 0, (struct sockaddr *) &clientAddress, slen);
 
@@ -181,7 +181,8 @@ int main(int argc, char* argv[]) {
 		recvfrom(udpSocket, acksegment, sizeof(finalACK), 0, (struct sockaddr*) &clientAddress, &slen);
 	}
 
-	// printf("Sending Data Already Successful\n");
+	Logfile << currentDateTime() << "Sender: All data has been sent successfully" << endl;
+	printf("All data has been sent successfully\n");
 
 	close(udpSocket);
 }
