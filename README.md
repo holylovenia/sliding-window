@@ -87,14 +87,14 @@ Receiver window size = 4
 
 ---
 
-0. **Awal**
+**0. Awal**
 
-Sender Window
+- Sender Window
 
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
-Receiver Window
+- Receiver Window
 
 |   |   |   |   |
 |:-:|:-:|:-:|:-:|
@@ -109,14 +109,14 @@ Largest Acceptable Frame (LAF) = 4
 
 ---
 
-1. **Pengiriman frame 1 (berhasil)**
+**1. Pengiriman frame 1 (berhasil)**
 
-Sender Window
+- Sender Window
 
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
-Receiver Window
+- Receiver Window
 
 | 1 |   |   |   |
 |:-:|:-:|:-:|:-:|
@@ -128,14 +128,14 @@ LAF = 4
 
 ---
 
-2. **Pengiriman frame 2 (hilang)**
+**2. Pengiriman frame 2 (hilang)**
 
-Sender Window
+- Sender Window
 
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
-Receiver Window
+- Receiver Window
 
 | 1 |   |   |   |
 |:-:|:-:|:-:|:-:|
@@ -150,14 +150,14 @@ LAF = 4
 
 ---
 
-3. **Pengiriman frame 3 (berhasil)**
+**3. Pengiriman frame 3 (berhasil)**
 
-Sender Window
+- Sender Window
 
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
-Receiver Window
+- Receiver Window
 
 | 1 |   | 3 |   |
 |:-:|:-:|:-:|:-:|
@@ -172,14 +172,14 @@ LAF = 4
 
 ---
 
-4. **Pengiriman frame 4 (berhasil)**
+**4. Pengiriman frame 4 (berhasil)**
 
-Sender Window
+- Sender Window
 
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
-Receiver Window
+- Receiver Window
 
 | 1 |   | 3 | 4 |   |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -194,14 +194,14 @@ LAF = 8
 
 ---
 
-5. **Pengiriman frame 5 (berhasil)**
+**5. Pengiriman frame 5 (berhasil)**
 
-Sender Window
+- Sender Window
 
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
-Receiver Window
+- Receiver Window
 
 | 1 |   | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -216,14 +216,14 @@ LAF = 8
 
 ---
 
-6. **Pengiriman ulang frame 2 (berhasil)**
+**6. Pengiriman ulang frame 2 (berhasil)**
 
-Sender Window
+- Sender Window
 
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
-Receiver Window
+- Receiver Window
 
 | 1 | 2 | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -238,14 +238,14 @@ LAF = 8
 
 ---
 
-7. **Pengiriman ulang frame 3 (berhasil)**
+**7. Pengiriman ulang frame 3 (berhasil)**
 
-Sender Window
+- Sender Window
 
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
-Receiver Window
+- Receiver Window
 
 | 1 | 2 | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -260,14 +260,14 @@ LAF = 8
 
 ---
 
-8. **Pengiriman ulang frame 4 (berhasil)**
+**8. Pengiriman ulang frame 4 (berhasil)**
 
-Sender Window
+- Sender Window
 
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
-Receiver Window
+- Receiver Window
 
 | 1 | 2 | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -282,14 +282,14 @@ LAF = 8
 
 ---
 
-9. **Pengiriman ulang frame 6 (berhasil)**
+**9. Pengiriman ulang frame 6 (berhasil)**
 
-Sender Window
+- Sender Window
 
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
-Receiver Window
+- Receiver Window
 
 | 1 | 2 | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -313,7 +313,8 @@ LAF = 8
 
 ## Jawaban
 1. Apa yang terjadi jika advertised window yang dikirim bernilai 0? Apa cara untuk menangani hal tersebut?
-Maka, data yang di receiver window ditulis ke file eksternal, dan ukuran advertised window size dijadikan sebesar window size atau buffer size (salah satu yang bernilai lebih kecil di antara keduanya).
+
+`>` Maka, data yang di receiver window ditulis ke file eksternal, dan ukuran advertised window size dijadikan sebesar window size atau buffer size (salah satu yang bernilai lebih kecil di antara keduanya).
 
 2. Sebutkan field data yang terdapat TCP Header serta ukurannya, ilustrasikan, dan jelaskan kegunaan dari masing-masing field data tersebut!
 
