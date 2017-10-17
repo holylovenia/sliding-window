@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 	//Urusan Timeout
 	struct timeval timeout;
 	timeout.tv_sec = 0;
-	timeout.tv_usec = 1000;
+	timeout.tv_usec = 10;
 	setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO, (char *) &timeout, sizeof(timeout));
 
 	//Urusan Address
@@ -75,7 +75,7 @@ int main(int argc, char* argv[]) {
 	srand(time(NULL));
 
 	while (1) {
-		printf("Sending Data: \n");
+		// printf("Sending Data: \n");
 		
 		//Urusan Buffer	
 		while (counterBuffer < bufferSize && !alreadyReadAll) {
@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
 				break;
 			}
 			buffer[counterBuffer] = c;
-			printf("Read Data : %d %c \n", counterBuffer + bufferSizeOffset, buffer[counterBuffer]);
+			// printf("Read Data : %d %c \n", counterBuffer + bufferSizeOffset, buffer[counterBuffer]);
 			counterBuffer++;
 		}
 
@@ -104,7 +104,7 @@ int main(int argc, char* argv[]) {
 			
 			LFS(sendingWindow) = LFS(sendingWindow) + 1;
 
-			printf("Frame Number %d : DATA %c\n", LFS(sendingWindow) - 1, Data(paket));
+			// printf("Frame Number %d : DATA %c\n", LFS(sendingWindow) - 1, Data(paket));
 
 			//Send Segment TODO: SLIDING WINDOW
 			char* segment = (char *) &paket;
@@ -113,7 +113,7 @@ int main(int argc, char* argv[]) {
 			}
 			paramSend++;
 		}
-		printf("YAHA\n");
+		// printf("YAHA\n");
 			
 		//Sending Lost Frame
 		int i;
@@ -121,7 +121,7 @@ int main(int argc, char* argv[]) {
 			paket = CreateSegment(i, buffer[i - bufferSizeOffset], 0);
 			Checksum(paket) = generateChecksumPaket(paket);
 			
-			printf("Repeat Send Frame Number %d : DATA %c\n", i, Data(paket));
+			// printf("Repeat Send Frame Number %d : DATA %c\n", i, Data(paket));
 
 			char* segment = (char *) &paket;
 			if (sendto(udpSocket, segment, sizeof(paket), 0, (struct sockaddr *) &clientAddress, slen) == -1) {
@@ -138,12 +138,12 @@ int main(int argc, char* argv[]) {
 					advertisedWindowSize = AdvertisedWindowSize(ack);
 					LAR(sendingWindow) = NextSequenceNumber(ack);
 				} else {
-					printf("Wrong ACK Checksum\n");
+					// printf("Wrong ACK Checksum\n");
 				}
 			} else {
-				printf("Timeout\n");
+				// printf("Timeout\n");
 			}
-			printf("Received ACK %d\n", NextSequenceNumber(ack));
+			// printf("Received ACK %d\n", NextSequenceNumber(ack));
 		}
 		
 
@@ -152,11 +152,11 @@ int main(int argc, char* argv[]) {
 		}
 
 		//Buffer Size Offset Increase
-		printf("YEEE %d %d\n", LAR(sendingWindow),  bufferSize + bufferSizeOffset);
+		// printf("YEEE %d %d\n", LAR(sendingWindow),  bufferSize + bufferSizeOffset);
 		if (LAR(sendingWindow) == bufferSize + bufferSizeOffset) {
 			counterBuffer = 0;
 			bufferSizeOffset += bufferSize;
-			printf("SIKAT %d\n", bufferSizeOffset);
+			// printf("SIKAT %d\n", bufferSizeOffset);
 		} 
 
 		// sleep(rand() % 2);
@@ -169,11 +169,11 @@ int main(int argc, char* argv[]) {
 	finalSegment = CreateSegment(0, 0, 0);
 	SOH(finalSegment) = 0x2;
 	Checksum(finalSegment) = generateChecksumPaket(finalSegment);
-	printf("%c %c\n", generateChecksumPaket(finalSegment), Checksum(finalSegment));
+	// printf("%c %c\n", generateChecksumPaket(finalSegment), Checksum(finalSegment));
 	cout <<(generateChecksumPaket(finalSegment) == Checksum(finalSegment)) << endl;
 	cout << NextSequenceNumber(finalACK) << endl;
 	while (NextSequenceNumber(finalACK) == 0 || generateChecksumACK(finalACK) != Checksum(finalACK)) {
-		printf("Sending Final\n");
+		// printf("Sending Final\n");
 		char* segment = (char *) &finalSegment;
 		sendto(udpSocket, segment, sizeof(finalSegment), 0, (struct sockaddr *) &clientAddress, slen);
 
@@ -181,7 +181,7 @@ int main(int argc, char* argv[]) {
 		recvfrom(udpSocket, acksegment, sizeof(finalACK), 0, (struct sockaddr*) &clientAddress, &slen);
 	}
 
-	printf("Sending Data Already Successful\n");
+	// printf("Sending Data Already Successful\n");
 
 	close(udpSocket);
 }
