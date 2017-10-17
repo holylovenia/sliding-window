@@ -17,10 +17,10 @@ void die(char *s) {
 	exit(1);
 }
 
-void flush(unsigned char *buffer) {
+void flush(bool *alreadyReceived) {
 	int i;
 	for (i = 0; i < bufferSize; i++) {
-		buffer[i] = '\0';
+		alreadyReceived[i] = false;
 	}
 }
 
@@ -32,7 +32,8 @@ int main(int argc, char* argv[]) {
 
 	printf("%s\n%d\n%d\n%d\n", fileName, windowSize, bufferSize, port);
 	unsigned char buffer[bufferSize];
-	
+	bool alreadyReceived[bufferSize];
+
 	//Urusan Socket
 	int udpSocket;
 	struct sockaddr_in serverAddr, clientAddr;
@@ -74,51 +75,59 @@ int main(int argc, char* argv[]) {
 	unsigned int advertisedWindowSize = (bufferSize > windowSize) ? windowSize : bufferSize;
 	int finish = 0;
 
-	flush(buffer);
+	flush(alreadyReceived);
 	
 	//Urusan Random Number
 	srand(time(NULL));
 	while (1) {
-		// printf("Waiting for data...\n");
+		printf("Waiting for data...\n");
 		fflush(stdout);
 
 		char * recvBuf = (char *) &paket;
 		if (recvfrom(udpSocket, recvBuf, sizeof(paket), 0, (struct sockaddr *) &serverAddr, &slen) >= 0) {
-			// printf("%c %c\n", generateChecksumPaket(paket), Checksum(paket));
+			printf("%c %c\n", generateChecksumPaket(paket), Checksum(paket));
 			if (generateChecksumPaket(paket) == Checksum(paket)) {
 				if (SOH(paket) == 0x02) {
 					finish = 1;
 				}
-				// printf("Received packet from %s:%d\n", inet_ntoa(serverAddr.sin_addr), ntohs(serverAddr.sin_port));
-				// printf("Frame Number: %d Data: %c\n", SequenceNumber(paket), Data(paket));
+				printf("Received packet from %s:%d\n", inet_ntoa(serverAddr.sin_addr), ntohs(serverAddr.sin_port));
+				printf("Frame Number: %d Data: %c\n", SequenceNumber(paket), Data(paket));
 		
+				printf("SeqNum %d LFR %d LAF %d\n", SequenceNumber(paket), LFR, LAF);
 				if (SequenceNumber(paket) >= LFR && SequenceNumber(paket) <= LAF) {
 					if (SequenceNumber(paket) == LFR) LFR++;
-						
+
+					printf("SeqNum %d LFR %d LAF %d counterBufferOffset %d\n", SequenceNumber(paket), LFR, LAF, counterBufferOffset);
+					
 					//Writing Data to Buffer
-					if (buffer[SequenceNumber(paket) - counterBufferOffset] == '\0') {
-						buffer[SequenceNumber(paket) - counterBufferOffset] = Data(paket);
-						counterBuffer++;
-						advertisedWindowSize--;
-						if (advertisedWindowSize == 0) {
-							advertisedWindowSize = (bufferSize > windowSize) ? windowSize : bufferSize;
-						}
+					if (SequenceNumber(paket) - counterBufferOffset >= 0) {
+						if (!alreadyReceived[SequenceNumber(paket) - counterBufferOffset]) {
+							alreadyReceived[SequenceNumber(paket) - counterBufferOffset] = true;
+							buffer[SequenceNumber(paket) - counterBufferOffset] = Data(paket);
+							counterBuffer++;
+							advertisedWindowSize--;
+							if (advertisedWindowSize == 0) {
+								advertisedWindowSize = (bufferSize > windowSize) ? windowSize : bufferSize;
+							}
+						}	
 					}
+
 				}
-				// printf("windowSize=%d\n", windowSize);
-				// printf("advertisedWindowSize=%d\n", advertisedWindowSize);
+
+				printf("windowSize=%d\n", windowSize);
+				printf("advertisedWindowSize=%d\n", advertisedWindowSize);
 				LAF = LFR + min(windowSize, advertisedWindowSize);
-				// printf("LAF=%d\n", LAF);
-				// printf("LFR=%d\n", LFR);
+				printf("LAF=%d\n", LAF);
+				printf("LFR=%d\n", LFR);
 			} else {
-				// printf("Wrong Checksum\n");
+				printf("Wrong Checksum\n");
 			} 
 		} else {
-			// printf("Fail to receive\n");
+			printf("Fail to receive\n");
 		}
 
 		//Sending ACK 
-		// printf("Send ACK %d\n", LFR);
+		printf("Send ACK %d\n", LFR);
 		ack = CreatePacketACK(LFR, advertisedWindowSize, '0');
 		Checksum(ack) = generateChecksumACK(ack);
 
@@ -126,14 +135,16 @@ int main(int argc, char* argv[]) {
 		sendto(udpSocket, sendBuf, sizeof(ack), 0, (struct sockaddr*) &serverAddr, slen);
 
 		//Writing Data to File
+		printf("Counter Buffer %d bufferSize %d\n", counterBuffer, bufferSize);
 		if (counterBuffer == bufferSize) {
+			printf("MASUK SINI GING\n");
 			counterBufferOffset += bufferSize;
 			counterBuffer = 0;
 			for (int i = 0; i < bufferSize; i++) {
 				fputc(buffer[i], file);	
 			}
-			flush(buffer); 
-			// printf("Writing File\n");
+			flush(alreadyReceived);
+			printf("Writing File\n");
 		}
 
 		// sleep(rand() % 3);
