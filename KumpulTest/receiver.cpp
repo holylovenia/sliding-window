@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
 	//Urusan Timeout
 	struct timeval timeout;
 	timeout.tv_sec = 0;
-	timeout.tv_usec = 1000;
+	timeout.tv_usec = 10;
 	setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO, (char *) &timeout, sizeof(timeout));
 	
 
@@ -79,18 +79,18 @@ int main(int argc, char* argv[]) {
 	//Urusan Random Number
 	srand(time(NULL));
 	while (1) {
-		printf("Waiting for data...\n");
+		// printf("Waiting for data...\n");
 		fflush(stdout);
 
 		char * recvBuf = (char *) &paket;
 		if (recvfrom(udpSocket, recvBuf, sizeof(paket), 0, (struct sockaddr *) &serverAddr, &slen) >= 0) {
-			printf("%c %c\n", generateChecksumPaket(paket), Checksum(paket));
+			// printf("%c %c\n", generateChecksumPaket(paket), Checksum(paket));
 			if (generateChecksumPaket(paket) == Checksum(paket)) {
 				if (SOH(paket) == 0x02) {
 					finish = 1;
 				}
-				printf("Received packet from %s:%d\n", inet_ntoa(serverAddr.sin_addr), ntohs(serverAddr.sin_port));
-				printf("Frame Number: %d Data: %c\n", SequenceNumber(paket), Data(paket));
+				// printf("Received packet from %s:%d\n", inet_ntoa(serverAddr.sin_addr), ntohs(serverAddr.sin_port));
+				// printf("Frame Number: %d Data: %c\n", SequenceNumber(paket), Data(paket));
 		
 				if (SequenceNumber(paket) >= LFR && SequenceNumber(paket) <= LAF) {
 					if (SequenceNumber(paket) == LFR) LFR++;
@@ -105,20 +105,20 @@ int main(int argc, char* argv[]) {
 						}
 					}
 				}
-				printf("windowSize=%d\n", windowSize);
-				printf("advertisedWindowSize=%d\n", advertisedWindowSize);
+				// printf("windowSize=%d\n", windowSize);
+				// printf("advertisedWindowSize=%d\n", advertisedWindowSize);
 				LAF = LFR + min(windowSize, advertisedWindowSize);
-				printf("LAF=%d\n", LAF);
-				printf("LFR=%d\n", LFR);
+				// printf("LAF=%d\n", LAF);
+				// printf("LFR=%d\n", LFR);
 			} else {
-				printf("Wrong Checksum\n");
+				// printf("Wrong Checksum\n");
 			} 
 		} else {
-			printf("Fail to receive\n");
+			// printf("Fail to receive\n");
 		}
 
 		//Sending ACK 
-		printf("Send ACK %d\n", LFR);
+		// printf("Send ACK %d\n", LFR);
 		ack = CreatePacketACK(LFR, advertisedWindowSize, '0');
 		Checksum(ack) = generateChecksumACK(ack);
 
@@ -133,7 +133,7 @@ int main(int argc, char* argv[]) {
 				fputc(buffer[i], file);	
 			}
 			flush(buffer); 
-			printf("Writing File\n");
+			// printf("Writing File\n");
 		}
 
 		// sleep(rand() % 3);
