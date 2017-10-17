@@ -27,7 +27,7 @@ unsigned char* ReadData(char* fileName) {
 unsigned char generateChecksumACK(PacketACK paket) {
   unsigned char result = 0;
   result += ACK(paket);
-  result += AdvertisedWindowSize(paket);
+  result += AdvertisedWindowSize(paket) & 0xFF;
   result += NextSequenceNumber(paket) & 0xFF;
   return result;
 }
@@ -57,7 +57,7 @@ Segment CreateSegment(unsigned int inputSequenceNumber, unsigned char inputData,
   return S;
 }
 
-PacketACK CreatePacketACK(unsigned int inputNextSequenceNumber, unsigned char inputAdvertisedWindowSize, unsigned char inputChecksum) {
+PacketACK CreatePacketACK(unsigned int inputNextSequenceNumber, unsigned int inputAdvertisedWindowSize, unsigned char inputChecksum) {
   PacketACK P;
   ACK(P) = DefaultACK;
   NextSequenceNumber(P) = inputNextSequenceNumber;

@@ -19,7 +19,7 @@ typedef struct {
 typedef struct {
   unsigned char ACK;
   unsigned int NextSequenceNumber;
-  unsigned char AdvertisedWindowSize;
+  unsigned int AdvertisedWindowSize;
   unsigned char Checksum;
 } PacketACK;
 
@@ -46,7 +46,7 @@ unsigned char* ReadData(char* fileName);
 
 Segment CreateSegment(unsigned int inputSequenceNumber, unsigned char inputData, unsigned char inputChecksum);
 
-PacketACK CreatePacketACK(unsigned int inputNextSequenceNumber, unsigned char inputAdvertisedWindowSize, unsigned char inputChecksum);
+PacketACK CreatePacketACK(unsigned int inputNextSequenceNumber, unsigned int inputAdvertisedWindowSize, unsigned char inputChecksum);
 
 unsigned char generateChecksumPaket(Segment paket);
 

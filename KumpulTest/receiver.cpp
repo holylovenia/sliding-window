@@ -8,10 +8,9 @@
 #include <math.h>
 #include <unistd.h>
 
+using namespace std;
 
 unsigned int bufferSize;
-
-using namespace std;
 
 void die(char *s) {
 	perror(s);
@@ -42,12 +41,15 @@ int main(int argc, char* argv[]) {
 	if ((udpSocket = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
 		die("socket");
 	}
+
 	//Urusan Timeout
 
+	/*
 	struct timeval timeout;
 	timeout.tv_sec = 1;
 	timeout.tv_usec = 0;
 	setsockopt(udpSocket, SOL_SOCKET, SO_RCVTIMEO, (char *) &timeout, sizeof(timeout));
+	*/
 
 	//Urusan Address
 	clientAddr.sin_family = AF_INET;
@@ -101,11 +103,15 @@ int main(int argc, char* argv[]) {
 						counterBuffer++;
 						advertisedWindowSize--;
 						if (advertisedWindowSize == 0) {
-							advertisedWindowSize = bufferSize;
+							advertisedWindowSize = (bufferSize > windowSize) ? windowSize : bufferSize;
 						}
 					}
 				}
+				printf("windowSize=%d\n", windowSize);
+				printf("advertisedWindowSize=%d\n", advertisedWindowSize);
 				LAF = LFR + min(windowSize, advertisedWindowSize);
+				printf("LAF=%d\n", LAF);
+				printf("LFR=%d\n", LFR);
 			} else {
 				printf("Wrong Checksum\n");
 			} 
