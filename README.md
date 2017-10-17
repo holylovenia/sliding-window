@@ -307,8 +307,8 @@ LAF = 8
 
 ## Pembagian Tugas
 1. Rionaldi Chandraseta / 13515077: receiver, debugging
-2. Holy Lovenia / 13515113: utility, receiver
-3. Agus Gunawan / 13515143: transmitter
+2. Holy Lovenia / 13515113: utility, receiver, logfile
+3. Agus Gunawan / 13515143: transmitter, sender, socket
 
 
 ## Jawaban
