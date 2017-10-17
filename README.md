@@ -84,29 +84,31 @@ Sender bertugas untuk membaca file yang mau dikirim, kemudian mengirimkan datany
 Contoh dengan receiver window size = 4:
 
 - Awal
-Sender Window
 
+Sender Window
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
-
 |   |   |   |   |
 |:-:|:-:|:-:|:-:|
 
 Last Acknowledge Received (LAR) = 0
+
 Last Frame Sent (LFS) = 0
+
 Last Frame Received (LFR) = 0
+
 Largest Acceptable Frame (LAF) = 4
 
-- Pengiriman frame 1 (berhasil)
-Sender Window
 
+- Pengiriman frame 1 (berhasil)
+
+Sender Window
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
-
 | 1 |   |   |   |
 |:-:|:-:|:-:|:-:|
 
@@ -116,131 +118,154 @@ LFR = 1
 LAF = 4
 
 - Pengiriman frame 2 (hilang)
-Sender Window
 
+Sender Window
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
-
 | 1 |   |   |   |
 |:-:|:-:|:-:|:-:|
 
 LAR = 2
+
 LFS = 2
+
 LFR = 1
+
 LAF = 4
 
-- Pengiriman frame 3 (berhasil)
-Sender Window
 
+- Pengiriman frame 3 (berhasil)
+
+Sender Window
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
-
 | 1 |   | 3 |   |
 |:-:|:-:|:-:|:-:|
 
 LAR = 2
+
 LFS = 3
+
 LFR = 3
+
 LAF = 4
 
-- Pengiriman frame 4 (berhasil)
-Sender Window
 
+- Pengiriman frame 4 (berhasil)
+
+Sender Window
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
-
 | 1 |   | 3 | 4 |   |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 LAR = 2
+
 LFS = 4
+
 LFR = 4
+
 LAF = 8
 
-- Pengiriman frame 5 (berhasil)
-Sender Window
 
+- Pengiriman frame 5 (berhasil)
+
+Sender Window
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
-
 | 1 |   | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 LAR = 2
+
 LFS = 5
+
 LFR = 5
+
 LAF = 8
 
-- Pengiriman ulang frame 2 (berhasil)
-Sender Window
 
+- Pengiriman ulang frame 2 (berhasil)
+
+Sender Window
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
-
 | 1 | 2 | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 LAR = 3
+
 LFS = 2
+
 LFR = 2
+
 LAF = 8
 
-- Pengiriman ulang frame 3 (berhasil)
-Sender Window
 
+- Pengiriman ulang frame 3 (berhasil)
+
+Sender Window
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
-
 | 1 | 2 | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 LAR = 4
+
 LFS = 3
+
 LFR = 3
+
 LAF = 8
 
-- Pengiriman ulang frame 4 (berhasil)
-Sender Window
 
+- Pengiriman ulang frame 4 (berhasil)
+
+Sender Window
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
-
 | 1 | 2 | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 LAR = 5
+
 LFS = 4
+
 LFR = 4
+
 LAF = 8
 
-- Pengiriman ulang frame 6 (berhasil)
-Sender Window
 
+- Pengiriman ulang frame 6 (berhasil)
+
+Sender Window
 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 Receiver Window
-
 | 1 | 2 | 3 | 4 | 5 |   |   |   |
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 
 LAR = 7
+
 LFS = 6
+
 LFR = 6
+
 LAF = 8
 
 
