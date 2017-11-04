@@ -1,6 +1,7 @@
 # Sliding Window
 
 Roses are red, violets are blue.
+
 I've sent my frames, where's the ACKs from you?
 
 
@@ -80,6 +81,9 @@ Pada Sliding Window buatan kami, ada dua komponen utama, yaitu sender dan receiv
 
 Sender bertugas untuk membaca file yang mau dikirim, kemudian mengirimkan datanya kepada receiver. Apabila terjadi kehilangan data, program akan mengirim ulang data dari sequence number yang hilang hingga sebelum Last Acknowledge Received (LAR).
 
+Pada sender terdapat tiga fungsi yaitu fungsi untuk membaca file dari file eksternal, fungsi untuk mengirim frame data, dan fungsi untuk mengirim kembali frame data yang sebelumnya hilang.
+
+Pada receiver terdapat dua fungsi yaitu yang pertama fungsi untuk mengurus receive frame data dan send ACK, yang kedua adalah fungsi untuk mengurus pemindahan data dari frame buffer ke file eksternal.
 
 ### Contoh
 
@@ -314,7 +318,7 @@ LAF = 8
 ## Jawaban
 1. Apa yang terjadi jika advertised window yang dikirim bernilai 0? Apa cara untuk menangani hal tersebut?
 
-> Maka, data yang di receiver window ditulis ke file eksternal, dan ukuran advertised window size dijadikan sebesar window size atau buffer size (salah satu yang bernilai lebih kecil di antara keduanya).
+> Maka, data yang di receiver window ditulis ke file eksternal, dan ukuran advertised window size dijadikan sebesar window size atau buffer size (salah satu yang bernilai lebih kecil di antara keduanya). Selain itu, sender juga tidak mengirim data apapun sama sekali sampai advertised window sizenya lebih dari 0.
 
 2. Sebutkan field data yang terdapat TCP Header serta ukurannya, ilustrasikan, dan jelaskan kegunaan dari masing-masing field data tersebut!
 

@@ -4,14 +4,14 @@ default: sendfile recvfile
 
 all: sendfile recvfile
 
-sender.o: sender.cpp utility.h send_window.h
-	$(CC) -c sender.cpp
+sender.o: src/sender.cpp src/utility.h src/send_window.h
+	$(CC) -c src/sender.cpp
 
-utility.o: utility.cpp utility.h
-	$(CC) -c utility.cpp
+utility.o: src/utility.cpp src/utility.h
+	$(CC) -c src/utility.cpp
 
-receiver.o: receiver.cpp utility.h
-	$(CC) -c receiver.cpp
+receiver.o: src/receiver.cpp src/utility.h
+	$(CC) -c src/receiver.cpp
 
 sendfile: sender.o utility.o
 	$(CC) -o sendfile sender.o utility.o
